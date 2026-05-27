@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Análisis Económico · Risaralda · Fundamentos de Economía</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            esmeralda: '#1a6b3a',
+            esmeraldaLight: '#2d9b59',
+            esmeraldaDark: '#0f4225',
+            cafe: '#5c3317',
+            cafeLight: '#7a4a28',
+            dorado: '#c9a227',
+            doradoLight: '#e0b84a',
+            crema: '#f9f5ef',
+            grisClaro: '#f0ede8',
+          },
+          fontFamily: {
+            display: ['Playfair Display', 'serif'],
+            body: ['Lato', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', sans-serif; background: #f0ede8; }
+    h1, h2, h3, .font-display { font-family: 'Playfair Display', serif; }
+
+    /* Navbar */
+    #navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(15, 66, 37, 0.95);
+      border-bottom: 2px solid rgba(201,162,39,0.4);
+    }
+    .nav-link {
+      position: relative;
+      color: rgba(249,245,239,0.8);
+      transition: color 0.3s;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: #c9a227;
+      transition: width 0.3s;
+    }
+    .nav-link:hover { color: #c9a227; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Hero */
+    .hero-bg {
+      background: linear-gradient(135deg, #0f4225 0%, #1a6b3a 45%, #1a4a1a 70%, #2d3a1a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(201,162,39,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(45,155,89,0.12) 0%, transparent 40%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(201,162,39,0.15);
+      border: 1px solid rgba(201,162,39,0.5);
+      color: #e0b84a;
+      padding: 4px 16px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .hero-stat {
+      border-left: 3px solid #c9a227;
+      padding-left: 1rem;
+    }
+
+    /* Section titles */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, #c9a227, transparent);
+      margin-top: 10px;
+    }
+    .section-title-center::after { margin-left: auto; margin-right: auto; }
+
+    /* Cards */
+    .data-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 20px rgba(15,66,37,0.08);
+      border: 1px solid rgba(15,66,37,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+      overflow: hidden;
+    }
+    .data-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(15,66,37,0.14); }
+
+    .card-accent-green { border-top: 4px solid #1a6b3a; }
+    .card-accent-gold { border-top: 4px solid #c9a227; }
+    .card-accent-cafe { border-top: 4px solid #5c3317; }
+    .card-accent-blue { border-top: 4px solid #1a3a6b; }
+
+    /* Comparison bar */
+    .comp-bar-wrap { background: #e8e4df; border-radius: 999px; height: 10px; }
+    .comp-bar { height: 10px; border-radius: 999px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+    /* Problem cards */
+    .problem-card {
+      background: white;
+      border-radius: 12px;
+      border-left: 5px solid #1a6b3a;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      padding: 1.5rem;
+      transition: border-color 0.3s;
+    }
+    .problem-card:hover { border-color: #c9a227; }
+    .problem-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(26,107,58,0.1);
+      line-height: 1;
+    }
+
+    /* Tabs */
+    .tab-btn {
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      padding: 0.75rem 1.25rem;
+      color: #5c3317;
+      background: transparent;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      border-bottom-color: #1a6b3a;
+      color: #1a6b3a;
+      background: rgba(26,107,58,0.06);
+    }
+    .tab-btn:hover:not(.active) { color: #1a6b3a; background: rgba(26,107,58,0.04); }
+
+    .tab-content { display: none; animation: fadeIn 0.35s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Info chips */
+    .chip {
+      display: inline-block;
+      background: rgba(26,107,58,0.1);
+      color: #1a6b3a;
+      border-radius: 999px;
+      padding: 2px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .chip-gold { background: rgba(201,162,39,0.12); color: #8a6d00; }
+    .chip-cafe { background: rgba(92,51,23,0.1); color: #5c3317; }
+
+    /* KPI indicator */
+    .kpi { font-family: 'Playfair Display', serif; font-weight: 700; }
+
+    /* Conclusion block */
+    .concl-block {
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: white;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    }
+    .concl-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.4rem;
+    }
+
+    /* Chart container */
+    .chart-wrap {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 2px 24px rgba(15,66,37,0.09);
+      padding: 1.5rem;
+      border: 1px solid rgba(15,66,37,0.06);
+    }
+
+    /* Footer */
+    footer { background: #0f4225; color: rgba(249,245,239,0.7); }
+
+    /* Scroll animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Divider */
+    .gold-divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #c9a227, transparent);
+      margin: 0 auto;
+      width: 80%;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+
+<!-- ======================== NAVBAR ======================== -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-3 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <!-- Logo -->
+    <a href="#inicio" class="flex items-center gap-2 flex-shrink-0">
+      <div class="w-8 h-8 rounded-full bg-dorado flex items-center justify-center text-esmeraldaDark font-display font-bold text-sm">R</div>
+      <span class="text-crema font-display font-semibold text-sm hidden sm:block">Risaralda <span class="text-dorado">·</span> Economía</span>
+    </a>
+
+    <!-- Nav links -->
+    <div class="hidden md:flex items-center gap-5">
+      <a href="#perfil" class="nav-link">Perfil</a>
+      <a href="#demografico" class="nav-link">Social</a>
+      <a href="#economico" class="nav-link">Económico</a>
+      <a href="#problemas" class="nav-link">Retos</a>
+      <a href="#propuestas" class="nav-link">Propuestas</a>
+      <a href="#conclusiones" class="nav-link">Conclusiones</a>
+    </div>
+
+    <!-- Asesores badge -->
+    <div class="hidden lg:flex items-center gap-2 text-xs text-crema/60 flex-shrink-0">
+      <span class="text-dorado/70 font-bold text-xs">Asesores:</span>
+      <span class="text-crema/60">Aguilar</span><span class="text-dorado/40">·</span>
+      <span class="text-crema/60">Cabrera</span><span class="text-dorado/40">·</span>
+      <span class="text-crema/60">Pertuz</span><span class="text-dorado/40">·</span>
+      <span class="text-crema/60">Ramírez</span>
+    </div>
+
+    <!-- Mobile menu button -->
+    <button id="mobileMenuBtn" class="md:hidden text-crema p-1">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="mobileMenu" class="hidden md:hidden mt-3 pb-2 border-t border-white/10">
+    <div class="flex flex-col gap-1 pt-2 px-2">
+      <a href="#perfil" class="nav-link py-2 block" onclick="closeMobileMenu()">Perfil General</a>
+      <a href="#demografico" class="nav-link py-2 block" onclick="closeMobileMenu()">Indicadores Sociales</a>
+      <a href="#economico" class="nav-link py-2 block" onclick="closeMobileMenu()">Indicadores Económicos</a>
+      <a href="#problemas" class="nav-link py-2 block" onclick="closeMobileMenu()">Problemáticas</a>
+      <a href="#propuestas" class="nav-link py-2 block" onclick="closeMobileMenu()">Propuestas</a>
+      <a href="#conclusiones" class="nav-link py-2 block" onclick="closeMobileMenu()">Conclusiones</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ======================== HERO ======================== -->
+<section id="inicio" class="hero-bg min-h-screen flex items-center pt-20 pb-16 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto w-full">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="text-crema relative z-10">
+        <span class="hero-badge mb-6 block w-fit">Fundamentos de Economía · 2026</span>
+        <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-4">
+          Risaralda<br/>
+          <span class="text-dorado">Económico</span>
+        </h1>
+        <p class="text-crema/70 text-lg max-w-md mb-8 leading-relaxed">
+          Análisis integral del departamento del Eje Cafetero: indicadores sociales, estructura productiva y propuestas de desarrollo regional.
+        </p>
+        <div class="grid grid-cols-3 gap-4 max-w-sm">
+          <div class="hero-stat">
+            <div class="kpi text-3xl text-dorado">4.140</div>
+            <div class="text-crema/60 text-xs mt-1">km² extensión</div>
+          </div>
+          <div class="hero-stat">
+            <div class="kpi text-3xl text-dorado">973K</div>
+            <div class="text-crema/60 text-xs mt-1">habitantes</div>
+          </div>
+          <div class="hero-stat">
+            <div class="kpi text-3xl text-dorado">1.63%</div>
+            <div class="text-crema/60 text-xs mt-1">del PIB nacional</div>
+          </div>
+        </div>
+        <a href="#perfil" class="mt-10 inline-flex items-center gap-2 bg-dorado text-esmeraldaDark px-6 py-3 rounded-full font-bold text-sm hover:bg-doradoLight transition-colors">
+          Explorar análisis
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </a>
+      </div>
+
+      <!-- Map decoration -->
+      <div class="hidden lg:flex justify-center items-center relative">
+        <div class="relative w-72 h-72">
+          <div class="absolute inset-0 rounded-full border-2 border-dorado/20 animate-pulse"></div>
+          <div class="absolute inset-6 rounded-full border border-dorado/15"></div>
+          <div class="w-full h-full rounded-full bg-gradient-to-br from-esmeraldaLight/30 to-esmeraldaDark/40 flex items-center justify-center flex-col text-center p-8">
+            <div class="text-dorado text-5xl mb-2">☕</div>
+            <div class="font-display text-crema text-xl font-bold">Eje Cafetero</div>
+            <div class="text-crema/60 text-xs mt-1">Patrimonio UNESCO</div>
+            <div class="gold-divider w-24 my-3"></div>
+            <div class="text-crema/70 text-xs">Región Andina · Colombia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================== SECCIÓN 1: PERFIL GENERAL ======================== -->
+<section id="perfil" class="py-20 px-4 md:px-8 bg-crema">
+  <div class="max-w-7xl mx-auto">
+    <div class="mb-12 reveal">
+      <span class="chip mb-3">Sección 01</span>
+      <h2 class="section-title text-4xl md:text-5xl text-esmeraldaDark font-display font-bold mt-2">Perfil General</h2>
+      <p class="text-gray-500 mt-4 max-w-2xl">Características geográficas, demográficas e históricas del departamento de Risaralda.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Ubicación -->
+      <div class="data-card card-accent-green p-6 reveal">
+        <div class="flex items-start gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-esmeralda/10 flex items-center justify-center text-esmeralda text-lg flex-shrink-0">📍</div>
+          <div>
+            <h3 class="font-display font-bold text-esmeraldaDark text-lg">Ubicación Geográfica</h3>
+            <span class="chip text-xs">Región Andina</span>
+          </div>
+        </div>
+        <ul class="text-sm text-gray-600 space-y-2">
+          <li><span class="font-bold text-esmeralda">Capital:</span> Pereira</li>
+          <li><span class="font-bold text-esmeralda">Extensión:</span> 4.140 km²</li>
+          <li><span class="font-bold text-esmeralda">Límites:</span> Caldas, Quindío, Antioquia, Valle del Cauca y Chocó</li>
+          <li><span class="font-bold text-esmeralda">Zona:</span> Eje Cafetero Colombiano</li>
+        </ul>
+      </div>
+
+      <!-- Población -->
+      <div class="data-card card-accent-gold p-6 reveal">
+        <div class="flex items-start gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-dorado/10 flex items-center justify-center text-dorado text-lg flex-shrink-0">👥</div>
+          <div>
+            <h3 class="font-display font-bold text-esmeraldaDark text-lg">Demografía</h3>
+            <span class="chip-gold chip text-xs">~1.9% nacional</span>
+          </div>
+        </div>
+        <ul class="text-sm text-gray-600 space-y-2">
+          <li><span class="font-bold text-dorado">Población:</span> ~973.879 habitantes</li>
+          <li><span class="font-bold text-dorado">Densidad:</span> ~235 hab/km²</li>
+          <li><span class="font-bold text-dorado">Urbanización:</span> 78% urbano / 22% rural</li>
+          <li><span class="font-bold text-dorado">Municipios clave:</span> Pereira, Dosquebradas, Santa Rosa de Cabal, La Virginia</li>
+        </ul>
+      </div>
+
+      <!-- Historia y cultura -->
+      <div class="data-card card-accent-cafe p-6 reveal md:col-span-2 lg:col-span-1">
+        <div class="flex items-start gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-cafe/10 flex items-center justify-center text-cafe text-lg flex-shrink-0">🏛️</div>
+          <div>
+            <h3 class="font-display font-bold text-esmeraldaDark text-lg">Historia & Cultura</h3>
+            <span class="chip-cafe chip text-xs">Creado 1966</span>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 leading-relaxed">
+          Surgió en <strong>1966</strong> tras la separación del Viejo Caldas. Cuna del Eje Cafetero, declarado <strong>Patrimonio de la Humanidad por la UNESCO</strong> (Paisaje Cultural Cafetero). Su identidad se forja en la tradición arriera, la pujanza comercial y la cultura del café.
+        </p>
+      </div>
+    </div>
+
+    <!-- Recursos Naturales -->
+    <div class="data-card p-6 mt-6 reveal">
+      <h3 class="font-display font-bold text-esmeraldaDark text-xl mb-4">🌿 Recursos Naturales Estratégicos</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="text-center p-4 bg-esmeralda/5 rounded-xl">
+          <div class="text-3xl mb-2">🌋</div>
+          <div class="font-bold text-esmeraldaDark text-sm">Suelos Volcánicos</div>
+          <div class="text-xs text-gray-500 mt-1">Altamente fértiles</div>
+        </div>
+        <div class="text-center p-4 bg-blue-50 rounded-xl">
+          <div class="text-3xl mb-2">💧</div>
+          <div class="font-bold text-esmeraldaDark text-sm">Recursos Hídricos</div>
+          <div class="text-xs text-gray-500 mt-1">Ríos Otún y Cauca</div>
+        </div>
+        <div class="text-center p-4 bg-green-50 rounded-xl">
+          <div class="text-3xl mb-2">🦋</div>
+          <div class="font-bold text-esmeraldaDark text-sm">Biodiversidad</div>
+          <div class="text-xs text-gray-500 mt-1">PNN Los Nevados</div>
+        </div>
+        <div class="text-center p-4 bg-amber-50 rounded-xl">
+          <div class="text-3xl mb-2">🌲</div>
+          <div class="font-bold text-esmeraldaDark text-sm">Bosques Andinos</div>
+          <div class="text-xs text-gray-500 mt-1">Alta conservación</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================== SECCIÓN 2: INDICADORES SOCIALES ======================== -->
+<section id="demografico" class="py-20 px-4 md:px-8 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="mb-12 reveal">
+      <span class="chip mb-3">Sección 02</span>
+      <h2 class="section-title text-4xl md:text-5xl text-esmeraldaDark font-display font-bold mt-2">Indicadores Sociales</h2>
+      <p class="text-gray-500 mt-4 max-w-2xl">Comparativa entre Risaralda y el promedio nacional en las principales dimensiones de bienestar.</p>
+    </div>
+
+    <!-- IDH, Esperanza de vida, educación -->
+    <div class="grid md:grid-cols-3 gap-6 mb-6">
+      <div class="data-card card-accent-green p-6 reveal">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Índice de Desarrollo Humano</div>
+        <div class="kpi text-5xl text-esmeralda mb-1">0.761</div>
+        <div class="chip mb-4">Nivel: Alto</div>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1"><span class="font-bold text-esmeralda">Risaralda</span><span class="font-bold">0.761</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-esmeralda" style="width:0%" data-width="76.1%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-gray-500">Promedio Nacional</span><span class="text-gray-500">0.767</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-gray-300" style="width:0%" data-width="76.7%"></div></div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-3">Muy cercano al promedio nacional. Clasifica como alto desarrollo.</p>
+      </div>
+
+      <div class="data-card card-accent-blue p-6 reveal">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Esperanza de Vida</div>
+        <div class="kpi text-5xl text-blue-700 mb-1">77.7</div>
+        <div class="chip text-xs" style="background:rgba(29,78,216,0.1); color:#1d4ed8;">años promedio</div>
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          <div class="bg-blue-50 rounded-lg p-3 text-center">
+            <div class="text-blue-700 font-bold text-xl">74.9</div>
+            <div class="text-xs text-gray-500 mt-1">Hombres</div>
+          </div>
+          <div class="bg-pink-50 rounded-lg p-3 text-center">
+            <div class="text-pink-600 font-bold text-xl">80.5</div>
+            <div class="text-xs text-gray-500 mt-1">Mujeres</div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-3">Superior al promedio nacional de ~77.1 años.</p>
+      </div>
+
+      <div class="data-card card-accent-gold p-6 reveal">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Educación</div>
+        <div class="kpi text-5xl text-dorado mb-1">92.5%</div>
+        <div class="chip-gold chip text-xs">Cobertura básica</div>
+        <div class="mt-4 space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1"><span class="font-bold text-dorado">Analfabetismo Risaralda</span><span>3.8%</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-dorado" style="width:0%" data-width="38%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-gray-500">Analfabetismo Nacional</span><span class="text-gray-500">5.0%</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-gray-300" style="width:0%" data-width="50%"></div></div>
+          </div>
+        </div>
+        <p class="text-xs text-green-600 mt-3 font-bold">✓ Risaralda supera el promedio nacional.</p>
+      </div>
+    </div>
+
+    <!-- Pobreza y Gini -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div class="data-card p-6 reveal">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Pobreza Monetaria</div>
+        <div class="flex items-end gap-4 mb-4">
+          <div class="text-center">
+            <div class="kpi text-3xl text-esmeralda">23.8%</div>
+            <div class="text-xs text-gray-500">Risaralda</div>
+          </div>
+          <div class="text-gray-300 text-2xl mb-1">vs</div>
+          <div class="text-center">
+            <div class="kpi text-3xl text-red-400">33.0%</div>
+            <div class="text-xs text-gray-500">Nacional</div>
+          </div>
+        </div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-2 text-xs text-green-700 font-bold text-center">
+          ↓ 9.2 pp mejor que el promedio nacional
+        </div>
+      </div>
+
+      <div class="data-card p-6 reveal">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Pobreza Multidimensional</div>
+        <div class="flex items-end gap-4 mb-4">
+          <div class="text-center">
+            <div class="kpi text-3xl text-esmeralda">8.9%</div>
+            <div class="text-xs text-gray-500">Risaralda</div>
+          </div>
+          <div class="text-gray-300 text-2xl mb-1">vs</div>
+          <div class="text-center">
+            <div class="kpi text-3xl text-red-400">9.9%</div>
+            <div class="text-xs text-gray-500">Nacional</div>
+          </div>
+        </div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-2 text-xs text-green-700 font-bold text-center">
+          ↓ 1 pp por debajo del promedio
+        </div>
+      </div>
+
+      <div class="data-card p-6 reveal">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Coeficiente de Gini</div>
+        <div class="flex items-end gap-4 mb-4">
+          <div class="text-center">
+            <div class="kpi text-3xl text-amber-500">0.471</div>
+            <div class="text-xs text-gray-500">Risaralda</div>
+          </div>
+          <div class="text-gray-300 text-2xl mb-1">vs</div>
+          <div class="text-center">
+            <div class="kpi text-3xl text-red-400">0.546</div>
+            <div class="text-xs text-gray-500">Nacional</div>
+          </div>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-700 font-bold text-center">
+          Menos desigual que el país, pero aún alto
+        </div>
+      </div>
+    </div>
+
+    <!-- Salud y Servicios -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="data-card p-6 reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-4">🏥 Cobertura en Salud</h3>
+        <div class="kpi text-4xl text-esmeralda mb-2">96.2%</div>
+        <p class="text-sm text-gray-600">Afiliación al Sistema General de Seguridad Social en Salud (SGSSS).</p>
+      </div>
+      <div class="data-card p-6 reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-4">🏗️ Servicios Públicos Urbanos</h3>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-sm mb-1"><span>Acueducto Urbano</span><span class="font-bold text-esmeralda">98.5%</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-esmeralda" style="width:0%" data-width="98.5%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1"><span>Alcantarillado</span><span class="font-bold text-esmeralda">96.1%</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-esmeralda" style="width:0%" data-width="96.1%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1"><span>Energía Eléctrica</span><span class="font-bold text-esmeralda">99.3%</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-esmeralda" style="width:0%" data-width="99.3%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1"><span class="text-amber-600">Acueducto Rural</span><span class="font-bold text-amber-600">64%</span></div>
+            <div class="comp-bar-wrap"><div class="comp-bar bg-amber-400" style="width:0%" data-width="64%"></div></div>
+          </div>
+        </div>
+        <p class="text-xs text-amber-600 mt-2">⚠️ Brecha rural significativa en acceso a acueducto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================== SECCIÓN 3: INDICADORES ECONÓMICOS ======================== -->
+<section id="economico" class="py-20 px-4 md:px-8 bg-crema">
+  <div class="max-w-7xl mx-auto">
+    <div class="mb-12 reveal">
+      <span class="chip mb-3">Sección 03</span>
+      <h2 class="section-title text-4xl md:text-5xl text-esmeraldaDark font-display font-bold mt-2">Indicadores Económicos</h2>
+      <p class="text-gray-500 mt-4 max-w-2xl">Estructura productiva, comercio exterior y principales sectores del departamento.</p>
+    </div>
+
+    <!-- KPI row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="data-card p-5 text-center reveal">
+        <div class="text-3xl mb-1">📊</div>
+        <div class="kpi text-2xl text-esmeralda">1.63%</div>
+        <div class="text-xs text-gray-500 mt-1">Participación PIB Nacional</div>
+      </div>
+      <div class="data-card p-5 text-center reveal">
+        <div class="text-3xl mb-1">💵</div>
+        <div class="kpi text-2xl text-esmeralda">US$5.761</div>
+        <div class="text-xs text-gray-500 mt-1">PIB per cápita</div>
+      </div>
+      <div class="data-card p-5 text-center reveal">
+        <div class="text-3xl mb-1">📉</div>
+        <div class="kpi text-2xl text-dorado">10.6%</div>
+        <div class="text-xs text-gray-500 mt-1">Desempleo A.M. Pereira</div>
+      </div>
+      <div class="data-card p-5 text-center reveal">
+        <div class="text-3xl mb-1">🏭</div>
+        <div class="kpi text-2xl text-cafe">42.3%</div>
+        <div class="text-xs text-gray-500 mt-1">Informalidad laboral</div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="grid md:grid-cols-2 gap-8 mb-8">
+      <div class="chart-wrap reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-1">Comparativa de Pobreza Monetaria</h3>
+        <p class="text-xs text-gray-400 mb-4">Risaralda vs. Promedio Nacional (DANE)</p>
+        <canvas id="chartPobreza" height="220"></canvas>
+      </div>
+      <div class="chart-wrap reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-1">Composición del PIB Departamental</h3>
+        <p class="text-xs text-gray-400 mb-4">Aporte por sector económico (%)</p>
+        <canvas id="chartPIB" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- Comercio exterior y empresas -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="data-card p-6 reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-4">🌍 Comercio Exterior</h3>
+        <div class="bg-esmeralda/5 border border-esmeralda/20 rounded-xl p-4 mb-4">
+          <div class="kpi text-2xl text-esmeralda">+54.6%</div>
+          <div class="text-xs text-gray-500">Crecimiento histórico exportaciones</div>
+        </div>
+        <div class="text-sm text-gray-600 space-y-2">
+          <div class="font-bold text-esmeraldaDark mb-2">Principales exportaciones:</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-amber-50 text-amber-700 text-xs px-3 py-1 rounded-full border border-amber-200">☕ Café</span>
+            <span class="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full border border-green-200">🥑 Aguacate Hass</span>
+            <span class="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full border border-blue-200">👕 Confecciones</span>
+            <span class="bg-gray-50 text-gray-700 text-xs px-3 py-1 rounded-full border border-gray-200">🚌 Ensamble automotriz</span>
+            <span class="bg-purple-50 text-purple-700 text-xs px-3 py-1 rounded-full border border-purple-200">⚡ Transformadores eléctricos</span>
+          </div>
+          <div class="font-bold text-esmeraldaDark mt-3 mb-1">Importaciones:</div>
+          <p class="text-sm text-gray-500">Bienes de capital e insumos industriales.</p>
+        </div>
+      </div>
+
+      <div class="data-card p-6 reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-4">🏢 Grandes Empresas</h3>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div class="w-8 h-8 bg-esmeralda rounded-full flex items-center justify-center text-white text-xs font-bold">B</div>
+            <div><div class="font-bold text-sm">Busscar de Colombia</div><div class="text-xs text-gray-400">Ensamble automotriz</div></div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div class="w-8 h-8 bg-dorado rounded-full flex items-center justify-center text-white text-xs font-bold">P</div>
+            <div><div class="font-bold text-sm">Papeles Nacionales</div><div class="text-xs text-gray-400">Industria manufacturera</div></div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div class="w-8 h-8 bg-cafe rounded-full flex items-center justify-center text-white text-xs font-bold">M</div>
+            <div><div class="font-bold text-sm">Magnetron</div><div class="text-xs text-gray-400">Transformadores eléctricos</div></div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">F</div>
+            <div><div class="font-bold text-sm">Frisby · Grupo Éxito · Ingenio Risaralda</div><div class="text-xs text-gray-400">Comercio y agroindustria</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Turismo e IED -->
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+      <div class="data-card p-6 reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-3">🏔️ Turismo</h3>
+        <div class="kpi text-3xl text-esmeralda mb-1">~4.5%</div>
+        <div class="text-sm text-gray-500 mb-3">del PIB departamental</div>
+        <p class="text-sm text-gray-600">Enfocado en turismo de naturaleza, termalismo (Santa Rosa de Cabal) y parques temáticos.</p>
+      </div>
+      <div class="data-card p-6 reveal">
+        <h3 class="font-display font-bold text-esmeraldaDark text-lg mb-3">📡 Inflación & IED</h3>
+        <div class="kpi text-3xl text-esmeralda mb-1">~3.2%</div>
+        <div class="text-sm text-gray-500 mb-3">Inflación regional anualizada (alineada con meta Banco de la República)</div>
+        <p class="text-sm text-gray-600">Fuerte atracción de IED en sectores de Servicios 4.0 (BPOs, tecnología) y agroindustria logística.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================== SECCIÓN 4: PROBLEMÁTICAS ======================== -->
+<section id="problemas" class="py-20 px-4 md:px-8 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="mb-12 reveal">
+      <span class="chip mb-3">Sección 04</span>
+      <h2 class="section-title text-4xl md:text-5xl text-esmeraldaDark font-display font-bold mt-2">Problemáticas y Retos</h2>
+      <p class="text-gray-500 mt-4 max-w-2xl">Los tres principales desafíos que enfrenta el desarrollo económico y social del departamento.</p>
+    </div>
+
+    <div class="space-y-6">
+      <!-- Problema 1 -->
+      <div class="problem-card reveal">
+        <div class="flex gap-4 items-start">
+          <div class="problem-number">01</div>
+          <div class="flex-1 pt-2">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full">⚠️ Mercado Laboral</span>
+            </div>
+            <h3 class="font-display font-bold text-esmeraldaDark text-xl mb-2">Deterioro del Mercado Laboral Urbano</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              Desaceleración del empleo formal en el área metropolitana de Pereira y aumento de la presión en desocupación femenina. La tasa de desempleo del área metropolitana se ubica en <strong>10.6%</strong>, con una marcada brecha de género en la absorción laboral.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problema 2 -->
+      <div class="problem-card reveal">
+        <div class="flex gap-4 items-start">
+          <div class="problem-number">02</div>
+          <div class="flex-1 pt-2">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">🏘️ Territorio</span>
+            </div>
+            <h3 class="font-display font-bold text-esmeraldaDark text-xl mb-2">Brecha Urbano-Rural</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              Marcada desigualdad en ingresos y acceso a servicios públicos de calidad en los municipios del occidente del departamento. La cobertura rural de acueducto es apenas del <strong>64%</strong>, frente al 98.5% urbano, evidenciando una profunda inequidad territorial.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problema 3 -->
+      <div class="problem-card reveal">
+        <div class="flex gap-4 items-start">
+          <div class="problem-number">03</div>
+          <div class="flex-1 pt-2">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full">☕ Sector Cafetero</span>
+            </div>
+            <h3 class="font-display font-bold text-esmeraldaDark text-xl mb-2">Dependencia de Precios Agrícolas Volátiles</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              La economía de los pequeños productores rurales sufre ante la <strong>fluctuación internacional de precios del café</strong> y el encarecimiento de fertilizantes importados. La alta dependencia de un solo cultivo genera ciclos de auge y crisis que erosionan la estabilidad del ingreso campesino.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================== SECCIÓN 5: PROPUESTAS ======================== -->
+<section id="propuestas" class="py-20 px-4 md:px-8 bg-esmeraldaDark">
+  <div class="max-w-7xl mx-auto">
+    <div class="mb-12 reveal">
+      <span class="inline-block bg-white/10 text-dorado border border-dorado/30 rounded-full text-xs font-bold tracking-widest uppercase px-4 py-1 mb-3">Sección 05</span>
+      <h2 class="font-display text-4xl md:text-5xl text-crema font-bold mt-2">Panel de Propuestas</h2>
+      <div class="w-16 h-1 bg-dorado mt-3"></div>
+      <p class="text-crema/60 mt-4 max-w-2xl">Propuestas de desarrollo regional elaboradas por los equipos asesores para la materia Fundamentos de Economía.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="data-card p-0 overflow-hidden reveal">
+      <!-- Tab buttons -->
+      <div class="flex overflow-x-auto border-b border-gray-100" id="tabBar">
+        <button class="tab-btn active" onclick="showTab('tab1', this)">
+          <span class="block text-xs opacity-70 mb-0.5">Propuesta 1</span>
+          Innovación Tecnológica
+        </button>
+        <button class="tab-btn" onclick="showTab('tab2', this)">
+          <span class="block text-xs opacity-70 mb-0.5">Propuesta 2</span>
+          Agroindustria
+        </button>
+        <button class="tab-btn" onclick="showTab('tab3', this)">
+          <span class="block text-xs opacity-70 mb-0.5">Propuesta 3</span>
+          Infraestructura
+        </button>
+        <button class="tab-btn" onclick="showTab('tab4', this)">
+          <span class="block text-xs opacity-70 mb-0.5">Propuesta 4</span>
+          Turismo Sostenible
+        </button>
+      </div>
+
+      <!-- Tab contents -->
+      <div class="p-6 md:p-8">
+        <!-- Tab 1 -->
+        <div id="tab1" class="tab-content active">
+          <div class="grid md:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-esmeralda rounded-xl flex items-center justify-center text-white text-2xl">🤖</div>
+                <div>
+                  <div class="text-xs text-gray-400 font-bold uppercase tracking-wider">Asesor de</div>
+                  <h3 class="font-display font-bold text-esmeraldaDark text-xl">Innovación Tecnológica</h3>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="border-l-4 border-esmeralda pl-4">
+                  <div class="text-xs font-bold text-esmeralda uppercase tracking-wider mb-1">Objetivo</div>
+                  <p class="text-gray-700 text-sm">Tecnificar la producción industrial del departamento.</p>
+                </div>
+                <div class="border-l-4 border-dorado pl-4">
+                  <div class="text-xs font-bold text-dorado uppercase tracking-wider mb-1">Sector</div>
+                  <p class="text-gray-700 text-sm">Industria manufacturera y metalmecánica.</p>
+                </div>
+                <div class="border-l-4 border-cafe pl-4">
+                  <div class="text-xs font-bold text-cafe uppercase tracking-wider mb-1">Estrategia</div>
+                  <p class="text-gray-700 text-sm">Crear un <strong>Hub de Desarrollo Tecnológico y Robótica en Pereira</strong>, financiado por Regalías, capacitando a jóvenes en automatización industrial.</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-esmeralda/5 border border-esmeralda/15 rounded-xl p-6">
+              <div class="text-xs font-bold text-esmeralda uppercase tracking-wider mb-3">✅ Beneficios esperados</div>
+              <ul class="text-sm text-gray-700 space-y-3">
+                <li class="flex items-start gap-2">
+                  <span class="text-esmeralda font-bold mt-0.5">→</span>
+                  Reducción del desempleo juvenil en el área metropolitana.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-esmeralda font-bold mt-0.5">→</span>
+                  Reconversión de la industria hacia la manufactura avanzada.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-esmeralda font-bold mt-0.5">→</span>
+                  Mayor valor agregado en la producción exportable del departamento.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2 -->
+        <div id="tab2" class="tab-content">
+          <div class="grid md:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-dorado rounded-xl flex items-center justify-center text-white text-2xl">🥑</div>
+                <div>
+                  <div class="text-xs text-gray-400 font-bold uppercase tracking-wider">Asesor de</div>
+                  <h3 class="font-display font-bold text-esmeraldaDark text-xl">Agroindustria y Exportación</h3>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="border-l-4 border-esmeralda pl-4">
+                  <div class="text-xs font-bold text-esmeralda uppercase tracking-wider mb-1">Objetivo</div>
+                  <p class="text-gray-700 text-sm">Mitigar la dependencia de los precios del café tradicional.</p>
+                </div>
+                <div class="border-l-4 border-dorado pl-4">
+                  <div class="text-xs font-bold text-dorado uppercase tracking-wider mb-1">Sector</div>
+                  <p class="text-gray-700 text-sm">Agropecuario y exportaciones no tradicionales.</p>
+                </div>
+                <div class="border-l-4 border-cafe pl-4">
+                  <div class="text-xs font-bold text-cafe uppercase tracking-wider mb-1">Estrategia</div>
+                  <p class="text-gray-700 text-sm">Subsidios e infraestructura logística para la <strong>diversificación hacia el Aguacate Hass y Plátano tecnificado</strong>, implementando cadenas de frío comunitarias.</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-dorado/8 border border-dorado/20 rounded-xl p-6">
+              <div class="text-xs font-bold text-dorado uppercase tracking-wider mb-3">✅ Beneficios esperados</div>
+              <ul class="text-sm text-gray-700 space-y-3">
+                <li class="flex items-start gap-2">
+                  <span class="text-dorado font-bold mt-0.5">→</span>
+                  Estabilidad de ingresos para productores campesinos.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-dorado font-bold mt-0.5">→</span>
+                  Aumento del <strong>20%</strong> en exportaciones no tradicionales.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-dorado font-bold mt-0.5">→</span>
+                  Reducción de la vulnerabilidad ante la volatilidad del mercado cafetero internacional.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3 -->
+        <div id="tab3" class="tab-content">
+          <div class="grid md:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white text-2xl">🏗️</div>
+                <div>
+                  <div class="text-xs text-gray-400 font-bold uppercase tracking-wider">Asesor de</div>
+                  <h3 class="font-display font-bold text-esmeraldaDark text-xl">Infraestructura Sostenible</h3>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="border-l-4 border-esmeralda pl-4">
+                  <div class="text-xs font-bold text-esmeralda uppercase tracking-wider mb-1">Objetivo</div>
+                  <p class="text-gray-700 text-sm">Cerrar la brecha urbano-rural en el departamento.</p>
+                </div>
+                <div class="border-l-4 border-blue-500 pl-4">
+                  <div class="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1">Sector</div>
+                  <p class="text-gray-700 text-sm">Servicios públicos domiciliarios y conectividad vial.</p>
+                </div>
+                <div class="border-l-4 border-cafe pl-4">
+                  <div class="text-xs font-bold text-cafe uppercase tracking-wider mb-1">Estrategia</div>
+                  <p class="text-gray-700 text-sm">Inversión masiva en <strong>acueductos rurales veredales</strong> y mejoramiento de vías terciarias mediante placas huellas en municipios del occidente.</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-6">
+              <div class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-3">✅ Beneficios esperados</div>
+              <ul class="text-sm text-gray-700 space-y-3">
+                <li class="flex items-start gap-2">
+                  <span class="text-blue-600 font-bold mt-0.5">→</span>
+                  Inclusión social y reducción de la pobreza multidimensional rural.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-blue-600 font-bold mt-0.5">→</span>
+                  Optimización del transporte de alimentos hacia centros urbanos.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-blue-600 font-bold mt-0.5">→</span>
+                  Mejoramiento de la calidad de vida en las comunidades rurales más vulnerables.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4 -->
+        <div id="tab4" class="tab-content">
+          <div class="grid md:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white text-2xl">🌿</div>
+                <div>
+                  <div class="text-xs text-gray-400 font-bold uppercase tracking-wider">Asesor de</div>
+                  <h3 class="font-display font-bold text-esmeraldaDark text-xl">Turismo Sostenible de Alto Valor</h3>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="border-l-4 border-esmeralda pl-4">
+                  <div class="text-xs font-bold text-esmeralda uppercase tracking-wider mb-1">Objetivo</div>
+                  <p class="text-gray-700 text-sm">Incrementar el impacto económico del turismo sin degradar el ecosistema.</p>
+                </div>
+                <div class="border-l-4 border-emerald-500 pl-4">
+                  <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Sector</div>
+                  <p class="text-gray-700 text-sm">Comercio y Servicios (Turismo, ecoturismo, etnoturismo).</p>
+                </div>
+                <div class="border-l-4 border-cafe pl-4">
+                  <div class="text-xs font-bold text-cafe uppercase tracking-wider mb-1">Estrategia</div>
+                  <p class="text-gray-700 text-sm"><strong>Certificación en sostenibilidad</strong> e incentivos fiscales para cadenas de ecoturismo y etnoturismo en municipios intermedios del departamento.</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-6">
+              <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-3">✅ Beneficios esperados</div>
+              <ul class="text-sm text-gray-700 space-y-3">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">→</span>
+                  Descentralización de la riqueza de Pereira hacia municipios periféricos.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">→</span>
+                  Creación de empleo formal rural de alta calidad.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">→</span>
+                  Preservación del Paisaje Cultural Cafetero como activo económico sostenible.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================== SECCIÓN 6: CONCLUSIONES ======================== -->
+<section id="conclusiones" class="py-20 px-4 md:px-8 bg-crema">
+  <div class="max-w-7xl mx-auto">
+    <div class="mb-12 reveal">
+      <span class="chip mb-3">Sección 06</span>
+      <h2 class="section-title text-4xl md:text-5xl text-esmeraldaDark font-display font-bold mt-2">Conclusiones</h2>
+      <p class="text-gray-500 mt-4 max-w-2xl">Síntesis académica del análisis económico del departamento de Risaralda.</p>
+    </div>
+
+    <!-- Reflexión principal -->
+    <div class="data-card p-8 mb-8 reveal" style="border-left: 6px solid #c9a227; background: linear-gradient(135deg, white, #fefdf8);">
+      <div class="flex items-start gap-4">
+        <div class="text-5xl flex-shrink-0">💡</div>
+        <div>
+          <div class="text-xs font-bold text-dorado uppercase tracking-wider mb-2">Reflexión Central</div>
+          <p class="font-display text-xl text-esmeraldaDark font-semibold leading-relaxed">
+            "Risaralda demuestra ser un departamento resiliente con una ubicación geográfica estratégica óptima para la logística nacional, consolidándose como un modelo de desarrollo regional intermedio en Colombia."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 mb-6">
+      <!-- Fortalezas -->
+      <div class="concl-block reveal">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="concl-icon bg-green-100"><span class="text-green-600">💪</span></div>
+          <h3 class="font-display font-bold text-esmeraldaDark text-lg">Fortalezas</h3>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-600">
+          <li class="flex items-start gap-2"><span class="text-esmeralda font-bold">✓</span> Alta competitividad y ubicación logística estratégica</li>
+          <li class="flex items-start gap-2"><span class="text-esmeralda font-bold">✓</span> Baja informalidad relativa (42.3% vs 56% nacional)</li>
+          <li class="flex items-start gap-2"><span class="text-esmeralda font-bold">✓</span> Liderazgo exportador no minero-energético (+54.6%)</li>
+          <li class="flex items-start gap-2"><span class="text-esmeralda font-bold">✓</span> Fuerte cohesión gremial e institucional</li>
+          <li class="flex items-start gap-2"><span class="text-esmeralda font-bold">✓</span> Indicadores sociales superiores al promedio nacional</li>
+        </ul>
+      </div>
+
+      <!-- Debilidades -->
+      <div class="concl-block reveal">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="concl-icon bg-red-100"><span class="text-red-500">⚠️</span></div>
+          <h3 class="font-display font-bold text-esmeraldaDark text-lg">Debilidades</h3>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-600">
+          <li class="flex items-start gap-2"><span class="text-red-500 font-bold">✗</span> Alta concentración económica en Pereira-Dosquebradas</li>
+          <li class="flex items-start gap-2"><span class="text-red-500 font-bold">✗</span> Vulnerabilidad de la economía rural ante choques externos</li>
+          <li class="flex items-start gap-2"><span class="text-red-500 font-bold">✗</span> Desaceleración en la absorción de empleo formal</li>
+          <li class="flex items-start gap-2"><span class="text-red-500 font-bold">✗</span> Brecha urbano-rural en servicios públicos</li>
+          <li class="flex items-start gap-2"><span class="text-red-500 font-bold">✗</span> Dependencia de la volatilidad del precio del café</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Comparación nacional y reto mayor -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="concl-block reveal">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="concl-icon bg-blue-100"><span class="text-blue-600">🇨🇴</span></div>
+          <h3 class="font-display font-bold text-esmeraldaDark text-lg">Comparación Nacional</h3>
+        </div>
+        <p class="text-sm text-gray-600 leading-relaxed">
+          Risaralda presenta indicadores sociales en <strong>pobreza, analfabetismo y desigualdad</strong> significativamente mejores que el promedio de Colombia. Su IDH de 0.761, pobreza monetaria del 23.8% (vs 33% nacional) y Gini de 0.471 (vs 0.546 nacional) lo consolidan como un <strong>modelo de desarrollo regional intermedio</strong>.
+        </p>
+      </div>
+
+      <div class="concl-block reveal" style="border-top: 4px solid #c9a227;">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="concl-icon bg-amber-100"><span class="text-amber-600">🎯</span></div>
+          <h3 class="font-display font-bold text-esmeraldaDark text-lg">Mayor Reto</h3>
+        </div>
+        <p class="text-sm text-gray-600 leading-relaxed">
+          Lograr la <strong>industrialización tecnológica</strong> y la <strong>descentralización de sus inversiones</strong> para blindar la economía rural ante choques externos, diversificar su base productiva y garantizar el acceso equitativo a servicios en todo el territorio departamental.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================== FOOTER ======================== -->
+<footer class="py-10 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="gold-divider mb-8"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-center md:text-left">
+        <div class="font-display text-crema/90 font-bold text-lg">Risaralda · Análisis Económico</div>
+        <div class="text-crema/40 text-xs mt-1">Fundamentos de Economía · 2026</div>
+      </div>
+      <div class="text-crema/40 text-xs text-center">
+        Datos: DANE, DNP, Banco de la República, Gobernación de Risaralda<br/>
+        <span class="text-dorado/60">Paisaje Cultural Cafetero · Patrimonio UNESCO</span>
+      </div>
+      <div class="text-crema/40 text-xs text-right">
+        Equipo Asesor:<br/>
+        Alejandro Aguilar · Alejandro Cabrera · Luis Pertuz · Jesús Ramírez
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ======================== JAVASCRIPT ======================== -->
+<script>
+  // ---- Mobile menu ----
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  function closeMobileMenu() { mobileMenu.classList.add('hidden'); }
+
+  // ---- Tabs ----
+  function showTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ---- Scroll reveal ----
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = (i * 0.06) + 's';
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ---- Animated bars ----
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.comp-bar[data-width]').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.data-card').forEach(card => barObserver.observe(card));
+
+  // ---- Chart 1: Pobreza Monetaria (Bar) ----
+  const ctx1 = document.getElementById('chartPobreza').getContext('2d');
+  new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: ['Risaralda', 'Promedio Nacional'],
+      datasets: [{
+        label: 'Pobreza Monetaria (%)',
+        data: [23.8, 33.0],
+        backgroundColor: ['rgba(26,107,58,0.85)', 'rgba(220,38,38,0.65)'],
+        borderColor: ['#1a6b3a', '#dc2626'],
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.parsed.y}% de la población`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 45,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: {
+            callback: val => val + '%',
+            font: { family: 'Lato', size: 11 }
+          }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: 'Playfair Display', size: 12, weight: 'bold' } }
+        }
+      }
+    }
+  });
+
+  // ---- Chart 2: Composición PIB (Donut) ----
+  const ctx2 = document.getElementById('chartPIB').getContext('2d');
+  new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: ['Comercio, Hoteles y Transporte', 'Industria Manufacturera', 'Agricultura', 'Otros Sectores'],
+      datasets: [{
+        data: [21.2, 12.1, 10.5, 56.2],
+        backgroundColor: ['#1a6b3a', '#c9a227', '#5c3317', '#c8c4bc'],
+        borderColor: ['#fff', '#fff', '#fff', '#fff'],
+        borderWidth: 3,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 14,
+            font: { family: 'Lato', size: 11 },
+            usePointStyle: true,
+            pointStyleWidth: 10,
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+          }
+        }
+      }
+    }
+  });
+
+  // ---- Smooth scroll for all anchor links ----
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        const offset = 72;
+        window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // ---- Navbar active highlight on scroll ----
+  const sections = document.querySelectorAll('section[id]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+    });
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current
+        ? '#c9a227'
+        : 'rgba(249,245,239,0.8)';
+    });
+  });
+</script>
+</body>
+</html>
